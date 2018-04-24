@@ -1,6 +1,6 @@
 import { Config } from "../index";
 import {
-    CLASS_DRAG_IMAGE, CLASS_DRAG_OPERATION_ICON, CLASS_PREFIX, DROP_EFFECT, DROP_EFFECTS
+    CLASS_DRAG_IMAGE, CLASS_DRAG_IMAGE_ACTIVE, CLASS_DRAG_OPERATION_ICON, CLASS_PREFIX, DROP_EFFECT, DROP_EFFECTS
 } from "./constants";
 import {
     addDocumentListener, applyDragImageSnapback, extractTransformStyles, isDOMElement,
@@ -181,6 +181,7 @@ export class DragOperationController {
         const dragImage = this._config.dragImageSetup( dragImageSrc );
         this._dragImageTransforms = extractTransformStyles( dragImage );
         // set layout styles for freely moving it around
+        dragImage.style.display = "none";
         dragImage.style.position = "absolute";
         dragImage.style.left = "0px";
         dragImage.style.top = "0px";
@@ -225,6 +226,12 @@ export class DragOperationController {
 
         translateElementToPoint( this._dragImage, this._dragImagePageCoordinates, this._dragImageTransforms, this._dragImageOffset, this._config.dragImageCenterOnTouch );
         document.body.appendChild( this._dragImage );
+
+        setTimeout(function() {
+          dragImage.style.display = "block";
+          dragImage.classList.add(CLASS_DRAG_IMAGE_ACTIVE);
+          console.log( "dnd-poly: revealing drag image and applying active class." );
+        }, 30);
 
         // 10. Initiate the drag-and-drop operation in a manner consistent with platform conventions, and as described below.
         this._iterationIntervalId = window.setInterval( () => {

@@ -5,6 +5,7 @@
 // css classes
 export const CLASS_PREFIX = "dnd-poly-";
 export const CLASS_DRAG_IMAGE = CLASS_PREFIX + "drag-image";
+export const CLASS_DRAG_IMAGE_ACTIVE = CLASS_PREFIX + "drag-image-active";
 export const CLASS_DRAG_IMAGE_SNAPBACK = CLASS_PREFIX + "snapback";
 export const CLASS_DRAG_OPERATION_ICON = CLASS_PREFIX + "icon";
 
