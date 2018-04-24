@@ -100,7 +100,7 @@ function isScrollEndReached(axis, scrollIntention, scrollBounds) {
     return true;
 }
 var _options = {
-    threshold: 75,
+    threshold: { vertical: 175, horizontal: 75 },
     velocityFn: function (velocity, threshold) {
         var multiplier = velocity / threshold;
         var easeInCubic = multiplier * multiplier * multiplier;
@@ -145,11 +145,11 @@ function scheduleScrollAnimation() {
 function scrollAnimation() {
     var scrollDiffX = 0, scrollDiffY = 0, isTopLevel = isTopLevelEl(_scrollableParent);
     if (_scrollIntentions.horizontal !== 0) {
-        scrollDiffX = Math.round(_options.velocityFn(_dynamicVelocity.x, _options.threshold) * _scrollIntentions.horizontal);
+        scrollDiffX = Math.round(_options.velocityFn(_dynamicVelocity.x, _options.threshold.horizontal) * _scrollIntentions.horizontal);
         getSetElementScroll(_scrollableParent, 0, scrollDiffX);
     }
     if (_scrollIntentions.vertical !== 0) {
-        scrollDiffY = Math.round(_options.velocityFn(_dynamicVelocity.y, _options.threshold) * _scrollIntentions.vertical);
+        scrollDiffY = Math.round(_options.velocityFn(_dynamicVelocity.y, _options.threshold.vertical) * _scrollIntentions.vertical);
         getSetElementScroll(_scrollableParent, 1, scrollDiffY);
     }
     if (isTopLevel) {
@@ -181,19 +181,19 @@ function updateScrollIntentions(currentCoordinates, scrollableParent, threshold,
         x: currentCoordinates.x - scrollableParentBounds.x,
         y: currentCoordinates.y - scrollableParentBounds.y
     };
-    scrollIntentions.horizontal = determineScrollIntention(currentCoordinatesOffset.x, scrollableParentBounds.width, threshold);
-    scrollIntentions.vertical = determineScrollIntention(currentCoordinatesOffset.y, scrollableParentBounds.height, threshold);
+    scrollIntentions.horizontal = determineScrollIntention(currentCoordinatesOffset.x, scrollableParentBounds.width, threshold.horizontal);
+    scrollIntentions.vertical = determineScrollIntention(currentCoordinatesOffset.y, scrollableParentBounds.height, threshold.vertical);
     if (scrollIntentions.horizontal && isScrollEndReached(0, scrollIntentions.horizontal, scrollableParentBounds)) {
         scrollIntentions.horizontal = 0;
     }
     else if (scrollIntentions.horizontal) {
-        dynamicVelocity.x = determineDynamicVelocity(scrollIntentions.horizontal, currentCoordinatesOffset.x, scrollableParentBounds.width, threshold);
+        dynamicVelocity.x = determineDynamicVelocity(scrollIntentions.horizontal, currentCoordinatesOffset.x, scrollableParentBounds.width, threshold.horizontal);
     }
     if (scrollIntentions.vertical && isScrollEndReached(1, scrollIntentions.vertical, scrollableParentBounds)) {
         scrollIntentions.vertical = 0;
     }
     else if (scrollIntentions.vertical) {
-        dynamicVelocity.y = determineDynamicVelocity(scrollIntentions.vertical, currentCoordinatesOffset.y, scrollableParentBounds.height, threshold);
+        dynamicVelocity.y = determineDynamicVelocity(scrollIntentions.vertical, currentCoordinatesOffset.y, scrollableParentBounds.height, threshold.vertical);
     }
     return !!(scrollIntentions.horizontal || scrollIntentions.vertical);
 }

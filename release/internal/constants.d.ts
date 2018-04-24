@@ -1,5 +1,6 @@
 export declare const CLASS_PREFIX = "dnd-poly-";
 export declare const CLASS_DRAG_IMAGE: string;
+export declare const CLASS_DRAG_IMAGE_ACTIVE: string;
 export declare const CLASS_DRAG_IMAGE_SNAPBACK: string;
 export declare const CLASS_DRAG_OPERATION_ICON: string;
 export declare const enum EFFECT_ALLOWED {

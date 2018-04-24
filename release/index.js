@@ -6,6 +6,7 @@
 
 var CLASS_PREFIX = "dnd-poly-";
 var CLASS_DRAG_IMAGE = CLASS_PREFIX + "drag-image";
+var CLASS_DRAG_IMAGE_ACTIVE = CLASS_PREFIX + "drag-image-active";
 var CLASS_DRAG_IMAGE_SNAPBACK = CLASS_PREFIX + "snapback";
 var CLASS_DRAG_OPERATION_ICON = CLASS_PREFIX + "icon";
 var ALLOWED_EFFECTS = ["none", "copy", "copyLink", "copyMove", "link", "linkMove", "move", "all"];
@@ -259,7 +260,12 @@ function tryFindDraggableTarget(event) {
         if (el.draggable === false) {
             continue;
         }
-        if (el.getAttribute && el.getAttribute("draggable") === "true") {
+        if (el.draggable === true) {
+            console.log("dnd-poly: found draggable target", el);
+            return el;
+        }
+        if (el.getAttribute
+            && el.getAttribute("draggable") === "true") {
             return el;
         }
     } while ((el = el.parentNode) && el !== document.body);
@@ -394,6 +400,7 @@ var DragOperationController = (function () {
         updateCentroidCoordinatesOfTouchesIn("page", this._lastTouchEvent, this._dragImagePageCoordinates);
         var dragImage = this._config.dragImageSetup(dragImageSrc);
         this._dragImageTransforms = extractTransformStyles(dragImage);
+        dragImage.style.display = "none";
         dragImage.style.position = "absolute";
         dragImage.style.left = "0px";
         dragImage.style.top = "0px";
@@ -426,6 +433,11 @@ var DragOperationController = (function () {
         }
         translateElementToPoint(this._dragImage, this._dragImagePageCoordinates, this._dragImageTransforms, this._dragImageOffset, this._config.dragImageCenterOnTouch);
         document.body.appendChild(this._dragImage);
+        setTimeout(function () {
+            dragImage.style.display = "block";
+            dragImage.classList.add(CLASS_DRAG_IMAGE_ACTIVE);
+            console.log("dnd-poly: revealing drag image and applying active class.");
+        }, 30);
         this._iterationIntervalId = window.setInterval(function () {
             if (_this._iterationLock) {
                 console.log("dnd-poly: iteration skipped because previous iteration hast not yet finished.");
