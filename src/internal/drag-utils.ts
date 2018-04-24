@@ -27,6 +27,7 @@ export function tryFindDraggableTarget( event:TouchEvent ):HTMLElement | undefin
             continue;
         }
         if( el.draggable === true ) {
+            console.log("dnd-poly: found draggable target", el);
             return el;
         }
         if( el.getAttribute

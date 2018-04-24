@@ -170,7 +170,7 @@ function isScrollEndReached( axis:ScrollAxis, scrollIntention:ScrollIntention, s
 //</editor-fold>
 
 let _options:ScrollOptions = {
-    threshold: 75,
+    threshold: { vertical: 175, horizontal: 75 },
     // simplified cubic-ease-in function
     velocityFn: function( velocity:number, threshold:number ) {
         const multiplier = velocity / threshold;
@@ -251,13 +251,13 @@ function scrollAnimation() {
 
     if( _scrollIntentions.horizontal !== ScrollIntention.NONE ) {
 
-        scrollDiffX = Math.round( _options.velocityFn( _dynamicVelocity.x, _options.threshold ) * _scrollIntentions.horizontal );
+        scrollDiffX = Math.round( _options.velocityFn( _dynamicVelocity.x, _options.threshold.horizontal ) * _scrollIntentions.horizontal );
         getSetElementScroll( _scrollableParent, ScrollAxis.HORIZONTAL, scrollDiffX );
     }
 
     if( _scrollIntentions.vertical !== ScrollIntention.NONE ) {
 
-        scrollDiffY = Math.round( _options.velocityFn( _dynamicVelocity.y, _options.threshold ) * _scrollIntentions.vertical );
+        scrollDiffY = Math.round( _options.velocityFn( _dynamicVelocity.y, _options.threshold.vertical ) * _scrollIntentions.vertical );
         getSetElementScroll( _scrollableParent, ScrollAxis.VERTICAL, scrollDiffY );
     }
 
@@ -288,7 +288,7 @@ function scrollAnimation() {
 
 function updateScrollIntentions( currentCoordinates:Point,
                                  scrollableParent:HTMLElement,
-                                 threshold:number,
+                                 threshold: ThresholdConfig,
                                  scrollIntentions:ScrollIntentions,
                                  dynamicVelocity:Point ):boolean {
 
@@ -314,8 +314,8 @@ function updateScrollIntentions( currentCoordinates:Point,
         y: currentCoordinates.y - scrollableParentBounds.y
     };
 
-    scrollIntentions.horizontal = determineScrollIntention( currentCoordinatesOffset.x, scrollableParentBounds.width, threshold );
-    scrollIntentions.vertical = determineScrollIntention( currentCoordinatesOffset.y, scrollableParentBounds.height, threshold );
+    scrollIntentions.horizontal = determineScrollIntention( currentCoordinatesOffset.x, scrollableParentBounds.width, threshold.horizontal );
+    scrollIntentions.vertical = determineScrollIntention( currentCoordinatesOffset.y, scrollableParentBounds.height, threshold.vertical );
 
     if( scrollIntentions.horizontal && isScrollEndReached( ScrollAxis.HORIZONTAL, scrollIntentions.horizontal, scrollableParentBounds ) ) {
 
@@ -324,7 +324,7 @@ function updateScrollIntentions( currentCoordinates:Point,
     }
     else if( scrollIntentions.horizontal ) {
 
-        dynamicVelocity.x = determineDynamicVelocity( scrollIntentions.horizontal, currentCoordinatesOffset.x, scrollableParentBounds.width, threshold );
+        dynamicVelocity.x = determineDynamicVelocity( scrollIntentions.horizontal, currentCoordinatesOffset.x, scrollableParentBounds.width, threshold.horizontal );
     }
 
     if( scrollIntentions.vertical && isScrollEndReached( ScrollAxis.VERTICAL, scrollIntentions.vertical, scrollableParentBounds ) ) {
@@ -334,7 +334,7 @@ function updateScrollIntentions( currentCoordinates:Point,
     }
     else if( scrollIntentions.vertical ) {
 
-        dynamicVelocity.y = determineDynamicVelocity( scrollIntentions.vertical, currentCoordinatesOffset.y, scrollableParentBounds.height, threshold );
+        dynamicVelocity.y = determineDynamicVelocity( scrollIntentions.vertical, currentCoordinatesOffset.y, scrollableParentBounds.height, threshold.vertical );
     }
 
     return !!(scrollIntentions.horizontal || scrollIntentions.vertical);
@@ -347,12 +347,17 @@ function updateScrollIntentions( currentCoordinates:Point,
 export interface ScrollOptions {
     // threshold in px. when distance between scrollable element edge and touch position is smaller start programmatic scroll.
     // defaults to 75px
-    threshold?:number;
+    threshold: ThresholdConfig;
     // function to customize the scroll velocity
     // velocity param: distance to scrollable element edge
     // threshold: the threshold used to determine when scrolling should start
     // defaults to cubic-ease-in.
     velocityFn:( velocity:number, threshold:number ) => number;
+}
+
+export interface ThresholdConfig {
+    vertical: number;
+    horizontal: number;
 }
 
 export const scrollBehaviourDragImageTranslateOverride:DragImageTranslateOverrideFn = handleDragImageTranslateOverride;
